@@ -9,5 +9,8 @@ exports.seed = (knex, Promise) => {
     })
     .then(() => {
       return knex.insert(users).into("users");
+    })
+    .then(() => {
+      return knex.insert(articles).into("articles");
     });
 };

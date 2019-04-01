@@ -1,4 +1,4 @@
-exports.up = function(knex, Promise) {
+exports.up = function(knex, Promsise) {
   return knex.schema.createTable("articles", articles => {
     articles.increments("article_id").primary();
     articles.string("title");
@@ -12,7 +12,7 @@ exports.up = function(knex, Promise) {
       .string("author")
       .references("username")
       .on("users");
-    articles.date("created_at").defaultTo(knex.fn.now());
+    articles.date("created_at").defaultTo(knex.raw("current_date"));
   });
 };
 
