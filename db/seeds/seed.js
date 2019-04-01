@@ -5,6 +5,6 @@ exports.seed = (knex, Promise) => {
     .rollback()
     .then(() => knex.migrate.latest())
     .then(() => {
-      // insert data
+      return knex.insert(topics).into("topics");
     });
 };
