@@ -1,3 +1,4 @@
+const { remapDate } = require("../../utils/remap_date");
 const { articles, comments, topics, users } = require("../data");
 
 exports.seed = (knex, Promise) => {
@@ -11,6 +12,6 @@ exports.seed = (knex, Promise) => {
       return knex.insert(users).into("users");
     })
     .then(() => {
-      return knex.insert(articles).into("articles");
+      return knex.insert(remapDate(articles)).into("articles");
     });
 };
