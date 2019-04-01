@@ -6,5 +6,8 @@ exports.seed = (knex, Promise) => {
     .then(() => knex.migrate.latest())
     .then(() => {
       return knex.insert(topics).into("topics");
+    })
+    .then(() => {
+      return knex.insert(users).into("users");
     });
 };
