@@ -13,5 +13,8 @@ exports.seed = (knex, Promise) => {
     })
     .then(() => {
       return knex.insert(remapDate(articles)).into("articles");
+    })
+    .then(() => {
+      return knex.insert(remapDate(comments)).into("comments");
     });
 };

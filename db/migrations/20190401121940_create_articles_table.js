@@ -2,7 +2,7 @@ exports.up = function(knex, Promsise) {
   return knex.schema.createTable("articles", articles => {
     articles.increments("article_id").primary();
     articles.string("title");
-    articles.string("body");
+    articles.string("body", 40000); //default to 40,000 char limit to allign with reddit
     articles.integer("votes").defaultTo(0);
     articles
       .string("topic")
