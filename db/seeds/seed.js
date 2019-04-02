@@ -1,6 +1,6 @@
 const { remapDate } = require("../../utils/remap_date");
 const { createArticleRef } = require("../../utils/create_article_ref");
-const { belongsToToArticleId } = require("../../utils/belongs_to_article_id");
+const { remapKeys } = require("../../utils/remap_keys");
 const { articles, comments, topics, users } = require("../data");
 
 exports.seed = (knex, Promise) => {
@@ -21,7 +21,7 @@ exports.seed = (knex, Promise) => {
     .then(insertedArticles => {
       const reference = createArticleRef(insertedArticles);
       const commentsDate = remapDate(comments);
-      const commentsRemapped = belongsToToArticleId(reference, commentsDate);
+      const commentsRemapped = remapKeys(reference, commentsDate);
       return knex.insert(commentsRemapped).into("comments");
     });
 };

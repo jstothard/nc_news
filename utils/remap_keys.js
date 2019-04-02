@@ -1,4 +1,4 @@
-exports.belongsToToArticleId = (reference, comments) => {
+exports.remapKeys = (reference, comments) => {
   return comments.map(comment => {
     newComment = { ...comment };
     const { belongs_to } = newComment;

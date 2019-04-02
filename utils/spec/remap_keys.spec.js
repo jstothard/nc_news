@@ -2,19 +2,19 @@ process.env.NODE_ENV = "test";
 const { expect } = require("chai");
 const { comments } = require("../../db/data");
 
-const { belongsToToArticleId } = require("../belongs_to_article_id");
+const { remapKeys } = require("../remap_keys");
 const reference = {
   "They're not exactly dogs, are they?": 1,
   "Living in the shadow of a great man": 2
 };
 //
 
-describe("belongsToToArticleId()", () => {
+describe("remapKeys()", () => {
   it("doesnt mutate original array", () => {
-    expect(belongsToToArticleId(reference, comments)).to.not.equal(comments);
+    expect(remapKeys(reference, comments)).to.not.equal(comments);
   });
   it("converts single elemnent array", () => {
-    const newComment = belongsToToArticleId(reference, comments.slice(0, 1));
+    const newComment = remapKeys(reference, comments.slice(0, 1));
     expect(newComment).to.eql([
       {
         body:
@@ -27,7 +27,7 @@ describe("belongsToToArticleId()", () => {
     ]);
   });
   it("converts multi elemnent array", () => {
-    const newComment = belongsToToArticleId(reference, comments.slice(0, 2));
+    const newComment = remapKeys(reference, comments.slice(0, 2));
     expect(newComment).to.eql([
       {
         body:
