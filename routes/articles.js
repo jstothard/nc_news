@@ -3,7 +3,8 @@ const { methodNotAllowed } = require("../errors");
 const {
   fetchArticles,
   fetchArticle,
-  updateArticle
+  updateArticle,
+  removeArticle
 } = require("../controllers/articles");
 
 articlesRouter
@@ -15,6 +16,7 @@ articlesRouter
   .route("/:article_id")
   .get(fetchArticle)
   .patch(updateArticle)
+  .delete(removeArticle)
   .all(methodNotAllowed);
 
 module.exports = articlesRouter;

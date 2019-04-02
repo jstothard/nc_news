@@ -53,3 +53,11 @@ exports.patchArticle = (article_id, inc_votes) => {
     .increment("votes", inc_votes)
     .returning("*");
 };
+
+exports.deleteArticle = article_id => {
+  return db
+    .select("*")
+    .from("articles")
+    .where({ "articles.article_id": article_id })
+    .del();
+};

@@ -8,7 +8,8 @@ exports.up = function(knex, Promise) {
     comments
       .integer("article_id")
       .references("article_id")
-      .on("articles");
+      .on("articles")
+      .onDelete("CASCADE");
     comments.integer("votes").defaultsTo(0);
     comments.date("created_at").defaultsTo(knex.fn.now());
     comments.string("body", 40000); //default to 40,000 char limit to allign with reddit

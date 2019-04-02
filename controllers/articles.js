@@ -1,4 +1,9 @@
-const { getArticles, getArticle, patchArticle } = require("../models/articles");
+const {
+  getArticles,
+  getArticle,
+  patchArticle,
+  deleteArticle
+} = require("../models/articles");
 
 exports.fetchArticles = (req, res, next) => {
   getArticles().then(articles => {
@@ -18,4 +23,12 @@ exports.updateArticle = (req, res, next) => {
       return res.status(200).send({ article });
     }
   );
+};
+
+exports.removeArticle = (req, res, next) => {
+  deleteArticle(req.params["article_id"]).then(() => {
+    return res
+      .status(204)
+      .send(`Article ${req.params["article_id"]} has been deleted`);
+  });
 };

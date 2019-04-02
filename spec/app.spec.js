@@ -96,6 +96,22 @@ describe("/", () => {
             });
         });
       });
+      describe("DEFAULT DELETE BEHAVIOUR", () => {
+        it("DELETE status:204 deletes article from article list", () => {
+          return request
+            .delete("/api/articles/1")
+            .expect(204)
+            .then(() => {
+              //  check that article has been deleted
+              // return request
+              //   .get("/api/articles/1")
+              //   .expect(404)
+              //   .then(({ body }) => {
+              //     console.log(body);
+              //   });
+            });
+        });
+      });
     });
   });
 });
