@@ -11,7 +11,7 @@ exports.up = function(knex, Promise) {
       .on("articles");
     comments.integer("votes").defaultsTo(0);
     comments.date("created_at").defaultsTo(knex.fn.now());
-    comments.string("body");
+    comments.string("body", 40000); //default to 40,000 char limit to allign with reddit
   });
 };
 
