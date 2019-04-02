@@ -36,5 +36,28 @@ describe("/", () => {
         });
       });
     });
+    describe("/articles", () => {
+      describe("DEFAULT GET BEHAVIOUR", () => {
+        it("GET status:200 returns a list of length n with correct keys", () => {
+          return request
+            .get("/api/articles")
+            .expect(200)
+            .then(({ body: { articles } }) => {
+              expect(articles).to.have.length(12);
+              articles.forEach(article => {
+                expect(article).to.contain.keys(
+                  "author",
+                  "title",
+                  "article_id",
+                  "topic",
+                  "created_at",
+                  "votes",
+                  "comment_count"
+                );
+              });
+            });
+        });
+      });
+    });
   });
 });
