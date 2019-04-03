@@ -215,5 +215,19 @@ describe("/", () => {
         });
       });
     });
+    describe("/users", () => {
+      describe("/:user_id", () => {
+        describe("DEFAULT GET BEHAVIOUR", () => {
+          it("POST status:200 returns specified user with correct keys", () => {
+            return request
+              .get("/api/users/butter_bridge")
+              .expect(200)
+              .then(({ body: { user } }) => {
+                expect(user).to.contain.keys("username", "avatar_url", "name");
+              });
+          });
+        });
+      });
+    });
   });
 });
