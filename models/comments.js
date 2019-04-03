@@ -19,3 +19,9 @@ exports.patchComment = (comment_id, inc_votes) => {
     .increment("votes", inc_votes)
     .returning("*");
 };
+
+exports.deleteComment = comment_id => {
+  return db("comments")
+    .where({ comment_id })
+    .del();
+};

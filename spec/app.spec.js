@@ -188,6 +188,28 @@ describe("/", () => {
                   "article_id"
                 );
                 expect(comment.votes).to.equal(17);
+                return request
+                  .get("/api/articles/9/comments")
+
+                  .expect(200)
+                  .then(({ body: { comments } }) => {
+                    expect(comments[1].votes).to.equal(17);
+                  });
+              });
+          });
+        });
+        describe("DEFAULT DELETE BEHAVIOUR", () => {
+          it("POST status:204 removes the comment from the db", () => {
+            return request
+              .delete("/api/comments/1")
+              .expect(204)
+              .then(() => {
+                return request
+                  .get("/api/articles/9/comments")
+                  .expect(200)
+                  .then(({ body: { comments } }) => {
+                    expect(comments).to.have.length(1);
+                  });
               });
           });
         });
