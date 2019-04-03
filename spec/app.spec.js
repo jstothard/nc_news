@@ -92,6 +92,22 @@ describe("/", () => {
               });
             });
         });
+        it("GET status:200 filters the articles by given username", () => {
+          return request
+            .get("/api/articles?username=butter_bridge")
+            .expect(200)
+            .then(({ body: { articles } }) => {
+              expect(articles).to.have.length(3);
+            });
+        });
+        it("GET status:200 filters the articles by given topic", () => {
+          return request
+            .get("/api/articles?topic=mitch")
+            .expect(200)
+            .then(({ body: { articles } }) => {
+              expect(articles).to.have.length(11);
+            });
+        });
       });
       describe("/:article_id", () => {
         describe("DEFAULT GET BEHAVIOUR", () => {

@@ -1,6 +1,11 @@
 const db = require("../db/connection");
 
-exports.getArticles = ({ sort_by = "created_at", order = "desc" }) => {
+exports.getArticles = ({
+  sort_by = "created_at",
+  order = "desc",
+  username,
+  ...otherQueries
+}) => {
   return db
     .select(
       "articles.author",
@@ -14,7 +19,15 @@ exports.getArticles = ({ sort_by = "created_at", order = "desc" }) => {
     .leftJoin("comments", "articles.article_id", "comments.article_id")
     .count("articles.article_id AS comment_count")
     .groupBy("articles.article_id")
-    .orderBy(sort_by, order);
+    .orderBy(sort_by, order)
+    .where(query => {
+      if (username) {
+        query.where("articles.author", username);
+      }
+      for (let currQuery in otherQueries) {
+        query.where(currQuery, otherQueries[currQuery]);
+      }
+    });
 };
 
 exports.getArticle = article_id => {
