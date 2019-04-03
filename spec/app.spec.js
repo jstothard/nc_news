@@ -139,7 +139,7 @@ describe("/", () => {
             });
           });
           describe("DEFAULT POST BEHAVIOUR", () => {
-            it("POST status:200 the posted comment", () => {
+            it("POST status:200 inserts new comment and returns the posted comment", () => {
               return request
                 .post("/api/articles/1/comments")
                 .send({
@@ -148,12 +148,47 @@ describe("/", () => {
                 })
                 .expect(200)
                 .then(({ body: { comment } }) => {
-                  expect(comment).to.eql({
-                    author: "butter_bridge",
-                    body: "hello world"
-                  });
+                  expect(comment).to.include.keys(
+                    "article_id",
+                    "author",
+                    "body",
+                    "comment_id",
+                    "created_at",
+                    "votes"
+                  );
+                  return request
+                    .get("/api/articles/1/comments")
+                    .expect(200)
+                    .then(({ body: { comments } }) => {
+                      expect(comments).to.have.length(14);
+                    });
                 });
             });
+          });
+        });
+      });
+    });
+    describe("/comments", () => {
+      describe("/:comment_id", () => {
+        describe("DEFAULT PATCH BEHAVIOUR", () => {
+          it("POST status:200 changes votes and returns the comment", () => {
+            return request
+              .patch("/api/comments/1")
+              .send({
+                inc_votes: 1
+              })
+              .expect(200)
+              .then(({ body: { comment } }) => {
+                expect(comment).to.contain.keys(
+                  "comment_id",
+                  "votes",
+                  "created_at",
+                  "author",
+                  "body",
+                  "article_id"
+                );
+                expect(comment.votes).to.equal(17);
+              });
           });
         });
       });

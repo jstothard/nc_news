@@ -1,4 +1,8 @@
-const { getComments, postComment } = require("../models/comments");
+const {
+  getComments,
+  postComment,
+  patchComment
+} = require("../models/comments");
 
 exports.fetchComments = (req, res, next) => {
   getComments(req.params["article_id"]).then(comments => {
@@ -14,4 +18,12 @@ exports.sendComment = (req, res, next) => {
   ).then(([comment]) => {
     return res.status(200).send({ comment });
   });
+};
+
+exports.updateComment = (req, res, next) => {
+  patchComment(req.params["comment_id"], req.body["inc_votes"]).then(
+    ([comment]) => {
+      return res.status(200).send({ comment });
+    }
+  );
 };

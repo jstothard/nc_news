@@ -10,5 +10,12 @@ exports.getComments = article_id => {
 exports.postComment = (article_id, author, body) => {
   return db("comments")
     .insert({ article_id, author, body })
-    .returning(["author", "body"]);
+    .returning("*");
+};
+
+exports.patchComment = (comment_id, inc_votes) => {
+  return db("comments")
+    .where({ comment_id })
+    .increment("votes", inc_votes)
+    .returning("*");
 };
