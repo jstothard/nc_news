@@ -58,58 +58,86 @@ describe("/", () => {
             });
         });
       });
-    });
-    describe("/articles/:article_id", () => {
-      describe("DEFAULT GET BEHAVIOUR", () => {
-        it("GET status:200 returns a single article object", () => {
-          return request
-            .get("/api/articles/1")
-            .expect(200)
-            .then(({ body: { article } }) => {
-              expect(article).to.eql({
-                author: "butter_bridge",
-                title: "Living in the shadow of a great man",
-                article_id: 1,
-                body: "I find this existence challenging",
-                topic: "mitch",
-                created_at: "2018-11-15T00:00:00.000Z",
-                votes: 100,
-                comment_count: "13"
+      describe("/:article_id", () => {
+        describe("DEFAULT GET BEHAVIOUR", () => {
+          it("GET status:200 returns a single article object", () => {
+            return request
+              .get("/api/articles/1")
+              .expect(200)
+              .then(({ body: { article } }) => {
+                expect(article).to.eql({
+                  author: "butter_bridge",
+                  title: "Living in the shadow of a great man",
+                  article_id: 1,
+                  body: "I find this existence challenging",
+                  topic: "mitch",
+                  created_at: "2018-11-15T00:00:00.000Z",
+                  votes: 100,
+                  comment_count: "13"
+                });
               });
-            });
+          });
         });
-      });
-      describe("DEFAULT PATCH BEHAVIOUR", () => {
-        it("PATCH status:200 updates article and returns updated article", () => {
-          return request
-            .patch("/api/articles/1")
-            .send({ inc_votes: 1 })
-            .expect(200)
-            .then(({ body: { article: { votes } } }) => {
-              expect(votes).to.equal(101);
+        describe("DEFAULT PATCH BEHAVIOUR", () => {
+          it("PATCH status:200 updates article and returns updated article", () => {
+            return request
+              .patch("/api/articles/1")
+              .send({ inc_votes: 1 })
+              .expect(200)
+              .then(({ body: { article: { votes } } }) => {
+                expect(votes).to.equal(101);
+                return request
+                  .get("/api/articles/1")
+                  .expect(200)
+                  .then(({ body: { article: { votes } } }) => {
+                    expect(votes).to.equal(101);
+                  });
+              });
+          });
+        });
+        describe("DEFAULT DELETE BEHAVIOUR", () => {
+          it("DELETE status:204 deletes article from article list", () => {
+            return request
+              .delete("/api/articles/1")
+              .expect(204)
+              .then(() => {
+                //  check that article has been deleted
+                // return request
+                //   .get("/api/articles/1")
+                //   .expect(404)
+                //   .then(({ body }) => {
+                //     console.log(body);
+                //   });
+              });
+          });
+        });
+        describe("/comments", () => {
+          describe("DEFAULT GET BEHAVIOUR", () => {
+            it("GET status:200 returns an array of comments with correct keys", () => {
               return request
-                .get("/api/articles/1")
+                .get("/api/articles/1/comments")
                 .expect(200)
-                .then(({ body: { article: { votes } } }) => {
-                  expect(votes).to.equal(101);
+                .then(({ body: { comments } }) => {
+                  comments.forEach(comment => {
+                    expect(comment).to.have.keys(
+                      "comment_id",
+                      "votes",
+                      "created_at",
+                      "author",
+                      "body"
+                    );
+                  });
                 });
             });
-        });
-      });
-      describe("DEFAULT DELETE BEHAVIOUR", () => {
-        it("DELETE status:204 deletes article from article list", () => {
-          return request
-            .delete("/api/articles/1")
-            .expect(204)
-            .then(() => {
-              //  check that article has been deleted
-              // return request
-              //   .get("/api/articles/1")
-              //   .expect(404)
-              //   .then(({ body }) => {
-              //     console.log(body);
-              //   });
+            it("GET status:200 comments of only given article ", () => {
+              return request
+                .get("/api/articles/1/comments")
+                .expect(200)
+                .then(({ body: { comments } }) => {
+                  expect(comments).to.have.length(13);
+                });
             });
+          });
         });
       });
     });
