@@ -6,7 +6,7 @@ const {
 } = require("../models/comments");
 
 exports.fetchComments = (req, res, next) => {
-  getComments(req.params["article_id"]).then(comments => {
+  getComments(req.params["article_id"], req.query).then(comments => {
     return res.status(200).send({ comments });
   });
 };

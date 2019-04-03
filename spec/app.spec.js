@@ -12,8 +12,8 @@ const connection = require("../db/connection");
 const request = supertest(app);
 
 describe("/", () => {
-  beforeEach(() => connection.seed.run());
   after(() => connection.destroy());
+  beforeEach(() => connection.seed.run());
 
   describe("/api", () => {
     it("GET status:200", () => {
@@ -111,7 +111,7 @@ describe("/", () => {
       });
       describe("/:article_id", () => {
         describe("DEFAULT GET BEHAVIOUR", () => {
-          it("GET status:200 returns a single article object", () => {
+          it("GET status:200 returns a single article object with a comment count", () => {
             return request
               .get("/api/articles/1")
               .expect(200)
@@ -188,6 +188,16 @@ describe("/", () => {
                   expect(comments).to.have.length(13);
                 });
             });
+            it("GET status:200 default to sorted by newest first", () => {
+              return request
+                .get("/api/articles/1/comments")
+                .expect(200)
+                .then(({ body: { comments } }) => {
+                  expect(comments).to.be.sortedBy("created_at", {
+                    descending: true
+                  });
+                });
+            });
           });
           describe("DEFAULT POST BEHAVIOUR", () => {
             it("POST status:200 inserts new comment and returns the posted comment", () => {
@@ -216,6 +226,28 @@ describe("/", () => {
                 });
             });
           });
+          describe("QUERIES", () => {
+            it("GET status:200 can be sorted by any column", () => {
+              return request
+                .get("/api/articles/1/comments?sort_by=votes")
+                .expect(200)
+                .then(({ body: { comments } }) => {
+                  expect(comments).to.be.sortedBy("votes", {
+                    descending: true
+                  });
+                });
+            });
+            it("GET status:200 can be sorted asc or desc", () => {
+              return request
+                .get("/api/articles/1/comments?sort_by=author&order=asc")
+                .expect(200)
+                .then(({ body: { comments } }) => {
+                  expect(comments).to.be.sortedBy("author", {
+                    descending: false
+                  });
+                });
+            });
+          });
         });
       });
     });
@@ -241,10 +273,9 @@ describe("/", () => {
                 expect(comment.votes).to.equal(17);
                 return request
                   .get("/api/articles/9/comments")
-
                   .expect(200)
                   .then(({ body: { comments } }) => {
-                    expect(comments[1].votes).to.equal(17);
+                    expect(comments[0].votes).to.equal(17);
                   });
               });
           });
