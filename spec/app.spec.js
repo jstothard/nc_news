@@ -1,6 +1,9 @@
 process.env.NODE_ENV = "test";
 
-const { expect } = require("chai");
+const chai = require("chai");
+const { expect } = chai;
+chai.use(require("chai-sorted"));
+
 const supertest = require("supertest");
 
 const app = require("../app");
@@ -54,6 +57,38 @@ describe("/", () => {
                   "votes",
                   "comment_count"
                 );
+              });
+            });
+        });
+        it("GET status:200 default to sorted by newest first", () => {
+          return request
+            .get("/api/articles")
+            .expect(200)
+            .then(({ body: { articles } }) => {
+              expect(articles).to.be.sortedBy("created_at", {
+                descending: true
+              });
+            });
+        });
+      });
+      describe("QUERIES", () => {
+        it("GET status:200 can be sorted by any column", () => {
+          return request
+            .get("/api/articles?sort_by=author")
+            .expect(200)
+            .then(({ body: { articles } }) => {
+              expect(articles).to.be.sortedBy("author", {
+                descending: true
+              });
+            });
+        });
+        it("GET status:200 can specify sort by asc or desc", () => {
+          return request
+            .get("/api/articles?sort_by=title&order=asc")
+            .expect(200)
+            .then(({ body: { articles } }) => {
+              expect(articles).to.be.sortedBy("title", {
+                descending: false
               });
             });
         });
