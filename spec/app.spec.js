@@ -138,6 +138,23 @@ describe("/", () => {
                 });
             });
           });
+          describe("DEFAULT POST BEHAVIOUR", () => {
+            it("POST status:200 the posted comment", () => {
+              return request
+                .post("/api/articles/1/comments")
+                .send({
+                  username: "butter_bridge",
+                  body: "hello world"
+                })
+                .expect(200)
+                .then(({ body: { comment } }) => {
+                  expect(comment).to.eql({
+                    author: "butter_bridge",
+                    body: "hello world"
+                  });
+                });
+            });
+          });
         });
       });
     });

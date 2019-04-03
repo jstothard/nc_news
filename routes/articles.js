@@ -6,11 +6,12 @@ const {
   updateArticle,
   removeArticle
 } = require("../controllers/articles");
-const { fetchComments } = require("../controllers/comments");
+const { fetchComments, sendComment } = require("../controllers/comments");
 
 articlesRouter
   .route("/:article_id/comments")
   .get(fetchComments)
+  .post(sendComment)
   .all(methodNotAllowed);
 
 articlesRouter
