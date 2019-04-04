@@ -162,6 +162,60 @@ describe("/", () => {
               });
           });
         });
+        describe("ERRORS", () => {
+          it("status:400 responds with error message when request is made with a bad ID", () => {
+            const methods = ["get", "patch", "delete"];
+            return Promise.all(
+              methods.map(method => {
+                return request[method]("/api/articles/abc")
+                  .send({ inc_votes: 1 })
+                  .expect(400)
+                  .then(res => {
+                    expect(res.body.msg).to.equal("Bad Request");
+                  });
+              })
+            );
+          });
+          it("status:404 responds with error message when ID not found", () => {
+            const methods = ["get", "patch", "delete"];
+            return Promise.all(
+              methods.map(method => {
+                return request[method]("/api/articles/900")
+                  .send({ inc_votes: 1 })
+                  .expect(404)
+                  .then(res => {
+                    expect(res.body.msg).to.equal("Not Found");
+                  });
+              })
+            );
+          });
+          it("status:405 responds with error message when method not allowed", () => {
+            const methods = ["post", "put"];
+            return Promise.all(
+              methods.map(method => {
+                return request[method]("/api/articles/1")
+                  .expect(405)
+                  .then(res => {
+                    expect(res.body.msg).to.equal("Method Not Allowed");
+                  });
+              })
+            );
+          });
+          it("PATCH status:422 responds with error message when body in incorrect format", () => {
+            const bodys = [{ inc_votes: "abc", hello_world: 1 }];
+            return Promise.all(
+              bodys.map(body => {
+                return request
+                  .patch("/api/articles/1")
+                  .send(body)
+                  .expect(422)
+                  .then(res => {
+                    expect(res.body.msg).to.equal("Unprocessable Entity");
+                  });
+              })
+            );
+          });
+        });
         describe("/comments", () => {
           describe("DEFAULT GET BEHAVIOUR", () => {
             it("GET status:200 returns an array of comments with correct keys", () => {

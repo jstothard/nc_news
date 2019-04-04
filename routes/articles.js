@@ -1,5 +1,5 @@
 const articlesRouter = require("express").Router();
-const { methodNotAllowed } = require("../errors");
+const { handle405 } = require("../errors");
 const {
   fetchArticles,
   fetchArticle,
@@ -12,18 +12,20 @@ articlesRouter
   .route("/:article_id/comments")
   .get(fetchComments)
   .post(sendComment)
-  .all(methodNotAllowed);
+  .all(handle405);
 
 articlesRouter
   .route("/")
   .get(fetchArticles)
-  .all(methodNotAllowed);
+  .all(handle405);
 
 articlesRouter
   .route("/:article_id")
   .get(fetchArticle)
   .patch(updateArticle)
   .delete(removeArticle)
-  .all(methodNotAllowed);
+  .all(handle405);
+
+articlesRouter.all("/*", () => handle404({ status: 404 }));
 
 module.exports = articlesRouter;
