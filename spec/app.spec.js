@@ -38,6 +38,20 @@ describe("/", () => {
             });
         });
       });
+      describe("ERRORS", () => {
+        it("status:405 responds with error message when method not allowed", () => {
+          const methods = ["post", "put", "delete", "patch"];
+          return Promise.all(
+            methods.map(method => {
+              return request[method]("/api/topics")
+                .expect(405)
+                .then(res => {
+                  expect(res.body.msg).to.equal("Method Not Allowed");
+                });
+            })
+          );
+        });
+      });
     });
     describe("/articles", () => {
       describe("DEFAULT GET BEHAVIOUR", () => {
