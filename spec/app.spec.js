@@ -212,13 +212,12 @@ describe("/", () => {
               .delete("/api/articles/1")
               .expect(204)
               .then(() => {
-                //  check that article has been deleted
-                // return request
-                //   .get("/api/articles/1")
-                //   .expect(404)
-                //   .then(({ body }) => {
-                //     console.log(body);
-                //   });
+                return request
+                  .get("/api/articles/1")
+                  .expect(404)
+                  .then(({ body: { msg } }) => {
+                    expect(msg).to.equal("Not Found");
+                  });
               });
           });
         });
@@ -435,7 +434,7 @@ describe("/", () => {
     describe("/comments", () => {
       describe("/:comment_id", () => {
         describe("DEFAULT PATCH BEHAVIOUR", () => {
-          it("POST status:200 changes votes and returns the comment", () => {
+          it("PATCH status:200 changes votes and returns the comment", () => {
             return request
               .patch("/api/comments/1")
               .send({
@@ -474,6 +473,58 @@ describe("/", () => {
                     expect(comments).to.have.length(1);
                   });
               });
+          });
+        });
+        describe("ERRORS", () => {
+          it("status:400 responds with error message when request is made with a bad ID", () => {
+            const methods = ["patch", "delete"];
+            return Promise.all(
+              methods.map(method => {
+                return request[method]("/api/comments/abc")
+                  .expect(400)
+                  .then(res => {
+                    expect(res.body.msg).to.equal("Bad Request");
+                  });
+              })
+            );
+          });
+          it("PATCH status:400 responds with error message when body in incorrect format", () => {
+            const bodys = [{ hello: 1 }];
+            return Promise.all(
+              bodys.map(body => {
+                return request
+                  .patch("/api/comments/1")
+                  .send(body)
+                  .expect(400)
+                  .then(res => {
+                    expect(res.body.msg).to.equal("Bad Request");
+                  });
+              })
+            );
+          });
+          it("status:404 responds with error message when ID not found", () => {
+            const methods = ["patch", "delete"];
+            return Promise.all(
+              methods.map(method => {
+                return request[method]("/api/comments/123")
+                  .expect(404)
+                  .then(res => {
+                    expect(res.body.msg).to.equal("Not Found");
+                  });
+              })
+            );
+          });
+          it("status:405 responds with error message when method not allowed", () => {
+            const methods = ["get", "put"];
+            return Promise.all(
+              methods.map(method => {
+                return request[method]("/api/comments/1")
+                  .expect(405)
+                  .then(res => {
+                    expect(res.body.msg).to.equal("Method Not Allowed");
+                  });
+              })
+            );
           });
         });
       });
