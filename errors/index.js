@@ -6,9 +6,7 @@ exports.handle400 = (err, req, res, next) => {
 };
 
 exports.handle404 = (err, req, res, next) => {
-  // console.log(err);
   if (err.status === 404) {
-    // console.log(err);
     res.status(404).send({ msg: "Not Found" });
   } else next(err);
 };

@@ -137,6 +137,38 @@ describe("/", () => {
             });
         });
       });
+      describe("ERRORS", () => {
+        it("GET status:400 responds with error message when request is made with a bad query", () => {
+          const queries = [
+            "article_id=1",
+            "votes=10",
+            "hello_world=yes",
+            "username=jake"
+          ];
+          return Promise.all(
+            queries.map(query => {
+              return request
+                .get(`/api/articles/abc?${query}`)
+                .expect(400)
+                .then(res => {
+                  expect(res.body.msg).to.equal("Bad Request");
+                });
+            })
+          );
+        });
+        it("status:405 responds with error message when method not allowed", () => {
+          const methods = ["post", "put", "patch", "delete"];
+          return Promise.all(
+            methods.map(method => {
+              return request[method]("/api/articles")
+                .expect(405)
+                .then(res => {
+                  expect(res.body.msg).to.equal("Method Not Allowed");
+                });
+            })
+          );
+        });
+      });
       describe("/:article_id", () => {
         describe("DEFAULT GET BEHAVIOUR", () => {
           it("GET status:200 returns a single article object with a comment count", () => {
