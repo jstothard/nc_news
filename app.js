@@ -8,7 +8,7 @@ app.use(express.json());
 
 app.use("/api", apiRouter);
 
-app.all("/*", () => handle404({ status: 404 }));
+app.all("/*", (req, res, next) => next({ status: 404 }));
 
 app.use(handle400);
 

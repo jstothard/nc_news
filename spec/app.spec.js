@@ -24,6 +24,20 @@ describe("/", () => {
           expect(body.ok).to.equal(true);
         });
     });
+    describe("ERRORS", () => {
+      it("status:404 responds with error message when route not found", () => {
+        const methods = ["get", "put", "delete", "patch"];
+        return Promise.all(
+          methods.map(method => {
+            return request[method]("/api/helloworld")
+              .expect(404)
+              .then(res => {
+                expect(res.body.msg).to.equal("Not Found");
+              });
+          })
+        );
+      });
+    });
     describe("/topics", () => {
       describe("DEFAULT GET BEHAVIOUR", () => {
         it("GET status:200 returns a list of length n with correct keys", () => {
