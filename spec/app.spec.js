@@ -98,6 +98,21 @@ describe("/", () => {
               });
             });
         });
+        it("GET status:200 default to sorted by newest first when invalid sort query", () => {
+          const sortQueries = ["sort_by=hello", "order=hello"];
+          return Promise.all(
+            sortQueries.map(sort => {
+              return request
+                .get("/api/articles/?" + sort)
+                .expect(200)
+                .then(({ body: { articles } }) => {
+                  expect(articles).to.be.sortedBy("created_at", {
+                    descending: true
+                  });
+                });
+            })
+          );
+        });
       });
       describe("QUERIES", () => {
         it("GET status:200 can be sorted by any column", () => {
@@ -194,6 +209,21 @@ describe("/", () => {
             return request
               .patch("/api/articles/1")
               .send({ inc_votes: 1 })
+              .expect(200)
+              .then(({ body: { article: { votes } } }) => {
+                expect(votes).to.equal(101);
+                return request
+                  .get("/api/articles/1")
+                  .expect(200)
+                  .then(({ body: { article: { votes } } }) => {
+                    expect(votes).to.equal(101);
+                  });
+              });
+          });
+          it("PATCH status:200 no body responds with unformatted article", () => {
+            return request
+              .patch("/api/articles/1")
+              .send({})
               .expect(200)
               .then(({ body: { article: { votes } } }) => {
                 expect(votes).to.equal(101);

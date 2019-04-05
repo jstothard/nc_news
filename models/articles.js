@@ -6,6 +6,16 @@ exports.getArticles = ({
   username,
   ...otherQueries
 }) => {
+  const columns = [
+    "author",
+    "title",
+    "article_id",
+    "topic",
+    "created_at",
+    "votes"
+  ];
+  const sortBy = columns.includes(sort_by) ? sort_by : "created_at";
+  const orderCheck = (order === "asc") | (order === "desc") ? order : "desc";
   return db
     .select(
       "articles.author",
@@ -19,7 +29,7 @@ exports.getArticles = ({
     .leftJoin("comments", "articles.article_id", "comments.article_id")
     .count("articles.article_id AS comment_count")
     .groupBy("articles.article_id")
-    .orderBy(sort_by, order)
+    .orderBy(sortBy, orderCheck)
     .where(query => {
       if (username) {
         query.where("articles.author", username);
