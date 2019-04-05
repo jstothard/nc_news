@@ -20,7 +20,7 @@ exports.fetchComments = (req, res, next) => {
 exports.sendComment = (req, res, next) => {
   postComment(req.params["article_id"], req.body["username"], req.body["body"])
     .then(([comment]) => {
-      return res.status(200).send({ comment });
+      return res.status(201).send({ comment });
     })
     .catch(next);
 };

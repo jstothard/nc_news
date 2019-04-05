@@ -357,14 +357,14 @@ describe("/", () => {
             });
           });
           describe("DEFAULT POST BEHAVIOUR", () => {
-            it("POST status:200 inserts new comment and returns the posted comment", () => {
+            it("POST status:201 inserts new comment and returns the posted comment", () => {
               return request
                 .post("/api/articles/1/comments")
                 .send({
                   username: "butter_bridge",
                   body: "hello world"
                 })
-                .expect(200)
+                .expect(201)
                 .then(({ body: { comment } }) => {
                   expect(comment).to.include.keys(
                     "article_id",
@@ -418,6 +418,23 @@ describe("/", () => {
                 })
               );
             });
+            it("POST status:400 responds with error message body references invalid column", () => {
+              const bodys = [
+                { username: "butter_bridge", hello: "hi" },
+                { username: "butter_bridge", article_id: 1 }
+              ];
+              return Promise.all(
+                bodys.map(body => {
+                  return request
+                    .post("/api/articles/abc/comments")
+                    .send(body)
+                    .expect(400)
+                    .then(res => {
+                      expect(res.body.msg).to.equal("Bad Request");
+                    });
+                })
+              );
+            });
             it("status:404 responds with error message when ID not found", () => {
               const methods = ["get", "post"];
               return Promise.all(
@@ -442,7 +459,7 @@ describe("/", () => {
                 })
               );
             });
-            it("POST status:422 responds with error message when body in incorrect format", () => {
+            it("POST status:422 responds with error message when invalid username", () => {
               const bodys = [{ username: "jake", body: "hi" }];
               return Promise.all(
                 bodys.map(body => {
