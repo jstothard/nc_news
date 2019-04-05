@@ -505,6 +505,29 @@ describe("/", () => {
                   });
               });
           });
+          it("PATCH status:200 returns original comment if no inc_vote", () => {
+            return request
+              .patch("/api/comments/1")
+              .send({})
+              .expect(200)
+              .then(({ body: { comment } }) => {
+                expect(comment).to.contain.keys(
+                  "comment_id",
+                  "votes",
+                  "created_at",
+                  "author",
+                  "body",
+                  "article_id"
+                );
+                expect(comment.votes).to.equal(16);
+                return request
+                  .get("/api/articles/9/comments")
+                  .expect(200)
+                  .then(({ body: { comments } }) => {
+                    expect(comments[0].votes).to.equal(16);
+                  });
+              });
+          });
         });
         describe("DEFAULT DELETE BEHAVIOUR", () => {
           it("POST status:204 removes the comment from the db", () => {
@@ -535,7 +558,7 @@ describe("/", () => {
             );
           });
           it("PATCH status:400 responds with error message when body in incorrect format", () => {
-            const bodys = [{ hello: 1 }];
+            const bodys = [{ inc_votes: "abc" }];
             return Promise.all(
               bodys.map(body => {
                 return request

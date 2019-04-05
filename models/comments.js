@@ -20,10 +20,12 @@ exports.postComment = (article_id, author, body) => {
     .returning("*");
 };
 
-exports.patchComment = (comment_id, inc_votes) => {
+exports.patchComment = (comment_id, inc_votes = 0) => {
   return db("comments")
     .where({ comment_id })
-    .increment("votes", inc_votes)
+    .modify(builder => {
+      if (inc_votes) builder.increment("votes", inc_votes);
+    })
     .returning("*");
 };
 
