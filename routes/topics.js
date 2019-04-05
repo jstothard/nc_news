@@ -1,10 +1,10 @@
 const topicsRouter = require("express").Router();
-const { methodNotAllowed } = require("../errors");
+const { handle405 } = require("../errors");
 const { fetchTopics } = require("../controllers/topics");
 
 topicsRouter
   .route("/")
   .get(fetchTopics)
-  .all(methodNotAllowed);
+  .all(handle405);
 
 module.exports = topicsRouter;
