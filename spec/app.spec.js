@@ -16,12 +16,28 @@ describe("/", () => {
   beforeEach(() => connection.seed.run());
 
   describe("/api", () => {
-    it("GET status:200", () => {
+    it("GET status:200 responds with a JSON describing all the available endpoints", () => {
       return request
         .get("/api")
         .expect(200)
         .then(({ body }) => {
-          expect(body.ok).to.equal(true);
+          expect(body.endpoints).to.eql({
+            topics: { address: "/api/topics", methods: ["GET"] },
+            aticles: { address: "/api/articles", methods: ["GET"] },
+            article: {
+              address: "/api/articles/:article_id",
+              methods: ["GET", "PATCH"]
+            },
+            article_comments: {
+              address: "/api/articles/:article_id/comments",
+              methods: ["GET", "POST"]
+            },
+            comments: {
+              address: "/api/comments",
+              methods: ["PATCH", "DELETE"]
+            },
+            user: { address: "/api/users/username", methods: ["GET"] }
+          });
         });
     });
     describe("ERRORS", () => {
@@ -636,6 +652,20 @@ describe("/", () => {
             );
           });
         });
+      });
+    });
+    describe("ERRORS", () => {
+      it("status:405 responds with error message when method not allowed", () => {
+        const methods = ["delete", "put", "patch", "post"];
+        return Promise.all(
+          methods.map(method => {
+            return request[method]("/api")
+              .expect(405)
+              .then(res => {
+                expect(res.body.msg).to.equal("Method Not Allowed");
+              });
+          })
+        );
       });
     });
   });
