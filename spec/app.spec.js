@@ -223,15 +223,14 @@ describe("/", () => {
           it("PATCH status:200 no body responds with unformatted article", () => {
             return request
               .patch("/api/articles/1")
-              .send({})
               .expect(200)
               .then(({ body: { article: { votes } } }) => {
-                expect(votes).to.equal(101);
+                expect(votes).to.equal(100);
                 return request
                   .get("/api/articles/1")
                   .expect(200)
                   .then(({ body: { article: { votes } } }) => {
-                    expect(votes).to.equal(101);
+                    expect(votes).to.equal(100);
                   });
               });
           });
@@ -291,7 +290,7 @@ describe("/", () => {
             );
           });
           it("PATCH status:422 responds with error message when body in incorrect format", () => {
-            const bodys = [{ inc_votes: "abc" }, { hello_world: 1 }];
+            const bodys = [{ inc_votes: "abc" }];
             return Promise.all(
               bodys.map(body => {
                 return request

@@ -58,7 +58,9 @@ exports.getArticle = article_id => {
     .where({ "articles.article_id": article_id });
 };
 
-exports.patchArticle = (article_id, inc_votes) => {
+exports.patchArticle = (article_id, inc_votes = 0) => {
+  if (inc_votes) incVote = inc_votes;
+  else incVote = 0;
   return db
     .select(
       "articles.author",
@@ -74,7 +76,9 @@ exports.patchArticle = (article_id, inc_votes) => {
     .count("articles.article_id AS comment_count")
     .groupBy("articles.article_id")
     .where({ "articles.article_id": article_id })
-    .increment("votes", inc_votes)
+    .modify(builder => {
+      if (incVote > 0) builder.increment("votes", incVote);
+    })
     .returning("*");
 };
 

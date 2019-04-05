@@ -24,7 +24,10 @@ exports.fetchArticle = (req, res, next) => {
 };
 
 exports.updateArticle = (req, res, next) => {
-  if (typeof req.body.inc_votes !== "number")
+  if (
+    typeof req.body.inc_votes !== "number" &&
+    req.body.inc_votes !== undefined
+  )
     next({
       status: 422
     });
