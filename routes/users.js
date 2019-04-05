@@ -1,10 +1,10 @@
 const usersRouter = require("express").Router();
-const { methodNotAllowed } = require("../errors");
+const { handle405 } = require("../errors");
 const { fetchUser } = require("../controllers/users");
 
 usersRouter
   .route("/:username")
   .get(fetchUser)
-  .all(methodNotAllowed);
+  .all(handle405);
 
 module.exports = usersRouter;

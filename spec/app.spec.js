@@ -610,6 +610,32 @@ describe("/", () => {
               });
           });
         });
+        describe("ERRORS", () => {
+          it("GET status:404 responds with error message when ID not found", () => {
+            const methods = ["get"];
+            return Promise.all(
+              methods.map(method => {
+                return request[method]("/api/users/123")
+                  .expect(404)
+                  .then(res => {
+                    expect(res.body.msg).to.equal("Not Found");
+                  });
+              })
+            );
+          });
+          it("status:405 responds with error message when method not allowed", () => {
+            const methods = ["delete", "put", "patch", "post"];
+            return Promise.all(
+              methods.map(method => {
+                return request[method]("/api/users/1")
+                  .expect(405)
+                  .then(res => {
+                    expect(res.body.msg).to.equal("Method Not Allowed");
+                  });
+              })
+            );
+          });
+        });
       });
     });
   });
