@@ -236,6 +236,21 @@ describe("/", () => {
                   });
               });
           });
+          it("PATCH status:200 works for negatives", () => {
+            return request
+              .patch("/api/articles/1")
+              .send({ inc_votes: -1 })
+              .expect(200)
+              .then(({ body: { article: { votes } } }) => {
+                expect(votes).to.equal(99);
+                return request
+                  .get("/api/articles/1")
+                  .expect(200)
+                  .then(({ body: { article: { votes } } }) => {
+                    expect(votes).to.equal(99);
+                  });
+              });
+          });
           it("PATCH status:200 no body responds with unformatted article", () => {
             return request
               .patch("/api/articles/1")

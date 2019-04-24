@@ -77,7 +77,7 @@ exports.patchArticle = (article_id, inc_votes = 0) => {
     .groupBy("articles.article_id")
     .where({ "articles.article_id": article_id })
     .modify(builder => {
-      if (incVote > 0) builder.increment("votes", incVote);
+      if (inc_votes) builder.increment("votes", incVote);
     })
     .returning("*");
 };
