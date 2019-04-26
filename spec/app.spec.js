@@ -89,8 +89,9 @@ describe("/", () => {
           return request
             .get("/api/articles")
             .expect(200)
-            .then(({ body: { articles } }) => {
+            .then(({ body: { articles, total_count } }) => {
               expect(articles).to.have.length(10);
+              expect(total_count).to.equal("12");
               articles.forEach(article => {
                 expect(article).to.contain.keys(
                   "author",

@@ -2,16 +2,21 @@ const {
   getArticles,
   getArticle,
   patchArticle,
-  deleteArticle
+  deleteArticle,
+  getArticlesCount
 } = require("../models/articles");
 const { routeNotFound } = require("../errors");
 
 exports.fetchArticles = (req, res, next) => {
-  getArticles(req.query)
-    .then(articles => {
-      return res.status(200).send({ articles });
-    })
+  const articlesArray = getArticles(req.query)
+    .then(articles => articles)
     .catch(next);
+  const count = getArticlesCount(req.query).then(total_count => total_count);
+  Promise.all([articlesArray, count]).then(arr => {
+    const articles = arr[0];
+    const { total_count } = arr[1];
+    return res.status(200).send({ articles, total_count });
+  });
 };
 
 exports.fetchArticle = (req, res, next) => {

@@ -45,6 +45,27 @@ exports.getArticles = ({
     .offset(offset);
 };
 
+exports.getArticlesCount = ({
+  sort_by = "created_at",
+  order = "desc",
+  username,
+  limit = 10,
+  p = 0,
+  ...otherQueries
+}) => {
+  return db("articles")
+    .where(query => {
+      if (username) {
+        query.where("author", username);
+      }
+      for (let currQuery in otherQueries) {
+        query.where(currQuery, otherQueries[currQuery]);
+      }
+    })
+    .count({ total_count: "article_id" })
+    .first();
+};
+
 exports.getArticle = article_id => {
   return db
     .select(
