@@ -16,7 +16,9 @@ exports.getArticles = ({
     "created_at",
     "votes"
   ];
-  const sortBy = columns.includes(sort_by) ? sort_by : "created_at";
+  const sortBy = [...columns, "comment_count"].includes(sort_by)
+    ? sort_by
+    : "created_at";
   const orderCheck = (order === "asc") | (order === "desc") ? order : "desc";
   const offset = p * limit;
   return db
