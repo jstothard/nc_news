@@ -90,7 +90,8 @@ describe("/", () => {
             .get("/api/articles")
             .expect(200)
             .then(({ body: { articles } }) => {
-              expect(articles).to.have.length(12);
+              expect(articles).to.have.length(10);
+              console.log(articles);
               articles.forEach(article => {
                 expect(article).to.contain.keys(
                   "author",
@@ -164,7 +165,7 @@ describe("/", () => {
             .get("/api/articles?topic=mitch")
             .expect(200)
             .then(({ body: { articles } }) => {
-              expect(articles).to.have.length(11);
+              expect(articles).to.have.length(10);
             });
         });
       });

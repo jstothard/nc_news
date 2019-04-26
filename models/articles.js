@@ -4,6 +4,7 @@ exports.getArticles = ({
   sort_by = "created_at",
   order = "desc",
   username,
+  limit = 10,
   ...otherQueries
 }) => {
   const columns = [
@@ -37,7 +38,8 @@ exports.getArticles = ({
       for (let currQuery in otherQueries) {
         query.where(currQuery, otherQueries[currQuery]);
       }
-    });
+    })
+    .limit(limit);
 };
 
 exports.getArticle = article_id => {
