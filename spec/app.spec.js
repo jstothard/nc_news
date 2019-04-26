@@ -374,7 +374,7 @@ describe("/", () => {
                 .get("/api/articles/1/comments")
                 .expect(200)
                 .then(({ body: { comments } }) => {
-                  expect(comments).to.have.length(13);
+                  expect(comments).to.have.length(10);
                 });
             });
             it("GET status:200 default to sorted by newest first", () => {
@@ -422,7 +422,7 @@ describe("/", () => {
                     "votes"
                   );
                   return request
-                    .get("/api/articles/1/comments")
+                    .get("/api/articles/1/comments?limit=15")
                     .expect(200)
                     .then(({ body: { comments } }) => {
                       expect(comments).to.have.length(14);
@@ -449,6 +449,22 @@ describe("/", () => {
                   expect(comments).to.be.sortedBy("author", {
                     descending: false
                   });
+                });
+            });
+            it("GET status:200 can specify a limit", () => {
+              return request
+                .get("/api/articles/1/comments?limit=11")
+                .expect(200)
+                .then(({ body: { comments } }) => {
+                  expect(comments).to.have.length(11);
+                });
+            });
+            it("GET status:200 can specify a page", () => {
+              return request
+                .get("/api/articles/1/comments?p=1")
+                .expect(200)
+                .then(({ body: { comments } }) => {
+                  expect(comments).to.have.length(3);
                 });
             });
           });
