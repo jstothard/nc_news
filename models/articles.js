@@ -5,6 +5,7 @@ exports.getArticles = ({
   order = "desc",
   username,
   limit = 10,
+  p = 0,
   ...otherQueries
 }) => {
   const columns = [
@@ -17,6 +18,7 @@ exports.getArticles = ({
   ];
   const sortBy = columns.includes(sort_by) ? sort_by : "created_at";
   const orderCheck = (order === "asc") | (order === "desc") ? order : "desc";
+  const offset = p * limit;
   return db
     .select(
       "articles.author",
@@ -39,7 +41,8 @@ exports.getArticles = ({
         query.where(currQuery, otherQueries[currQuery]);
       }
     })
-    .limit(limit);
+    .limit(limit)
+    .offset(offset);
 };
 
 exports.getArticle = article_id => {

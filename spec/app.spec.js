@@ -91,7 +91,6 @@ describe("/", () => {
             .expect(200)
             .then(({ body: { articles } }) => {
               expect(articles).to.have.length(10);
-              console.log(articles);
               articles.forEach(article => {
                 expect(article).to.contain.keys(
                   "author",
@@ -166,6 +165,22 @@ describe("/", () => {
             .expect(200)
             .then(({ body: { articles } }) => {
               expect(articles).to.have.length(10);
+            });
+        });
+        it("GET status:200 limits to a given page length", () => {
+          return request
+            .get("/api/articles?limit=12")
+            .expect(200)
+            .then(({ body: { articles } }) => {
+              expect(articles).to.have.length(12);
+            });
+        });
+        it("GET status:200 goes to specified page", () => {
+          return request
+            .get("/api/articles?p=1")
+            .expect(200)
+            .then(({ body: { articles } }) => {
+              expect(articles).to.have.length(2);
             });
         });
       });
