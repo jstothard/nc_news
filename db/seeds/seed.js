@@ -2,6 +2,7 @@ const { remapDate } = require("../../utils/remap_date");
 const { createArticleRef } = require("../../utils/create_article_ref");
 const { remapKeys } = require("../../utils/remap_keys");
 const { articles, comments, topics, users } = require("../data");
+const { addVotes } = require("../../utils/add_random_votes");
 
 exports.seed = (knex, Promise) => {
   return knex.migrate
@@ -15,7 +16,7 @@ exports.seed = (knex, Promise) => {
     })
     .then(() => {
       return knex("articles")
-        .insert(remapDate(articles))
+        .insert(addVotes(remapDate(articles)))
         .returning("*");
     })
     .then(insertedArticles => {
